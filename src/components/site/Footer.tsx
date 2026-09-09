@@ -1,16 +1,16 @@
 import { MessageCircle } from "lucide-react";
 import logo from "@/assets/diego-logo.png";
-import cartPhoto from "@/assets/diego-cart-33export-street.jpg";
+import hostessBanner from "@/assets/diego-hostess-banner.jpg";
 import { ENTERPRISE, SERVICES } from "@/lib/diego";
 
 export function Footer() {
   return (
     <footer className="relative isolate overflow-hidden text-primary-foreground">
       <img
-        src={cartPhoto}
+        src={hostessBanner}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 -z-20 size-full object-cover brightness-[0.65]"
+        className="absolute inset-0 -z-20 size-full object-cover object-top brightness-[0.65]"
         loading="lazy"
       />
       <div className="hero-surface absolute inset-0 -z-10 opacity-60" aria-hidden="true" />
