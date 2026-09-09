@@ -1,12 +1,19 @@
 import { ArrowRight, MessageCircle, Truck, GlassWater } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ENTERPRISE, WHATSAPP_CONTACTS } from "@/lib/diego";
-import { BeerGlassBackdrop } from "./BeerArt";
+import hostessBanner from "@/assets/diego-hostess-banner.jpg";
 
 export function Hero() {
   return (
-    <section id="top" className="hero-surface relative overflow-hidden">
-      <BeerGlassBackdrop className="pointer-events-none absolute -right-16 top-1/2 hidden h-[560px] w-[420px] -translate-y-1/2 text-primary-foreground sm:block" />
+    <section id="top" className="relative overflow-hidden">
+      <img
+        src={hostessBanner}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 -z-20 size-full object-cover object-top"
+        loading="lazy"
+      />
+      <div className="hero-surface absolute inset-0 -z-10 opacity-90" aria-hidden="true" />
       <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
         <div className="fade-up relative max-w-3xl">
           <span className="inline-flex items-center rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-foreground">
