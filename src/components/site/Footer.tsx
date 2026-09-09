@@ -10,10 +10,10 @@ export function Footer() {
         src={hostessBanner}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 -z-20 size-full object-cover object-top brightness-[0.65]"
+        className="absolute inset-0 -z-20 size-full object-cover object-center brightness-[0.7]"
         loading="lazy"
       />
-      <div className="hero-surface absolute inset-0 -z-10 opacity-60" aria-hidden="true" />
+      <div className="hero-surface absolute inset-0 -z-10 opacity-35" aria-hidden="true" />
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
