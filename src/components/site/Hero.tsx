@@ -5,7 +5,7 @@ import hostessBanner from "@/assets/diego-hostess-banner.jpg";
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden">
+    <section id="top" className="relative isolate overflow-hidden">
       <img
         src={hostessBanner}
         alt=""

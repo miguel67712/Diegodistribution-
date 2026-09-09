@@ -5,7 +5,7 @@ import { ENTERPRISE, SERVICES } from "@/lib/diego";
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden text-primary-foreground">
+    <footer className="relative isolate overflow-hidden text-primary-foreground">
       <img
         src={cartPhoto}
         alt=""
