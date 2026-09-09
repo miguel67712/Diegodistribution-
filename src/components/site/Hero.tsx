@@ -10,10 +10,10 @@ export function Hero() {
         src={hostessBanner}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 -z-20 size-full object-cover object-top"
+        className="absolute inset-0 -z-20 size-full object-cover object-top brightness-[0.65]"
         loading="lazy"
       />
-      <div className="hero-surface absolute inset-0 -z-10 opacity-90" aria-hidden="true" />
+      <div className="hero-surface absolute inset-0 -z-10 opacity-60" aria-hidden="true" />
       <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
         <div className="fade-up relative max-w-3xl">
           <span className="inline-flex items-center rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-foreground">
