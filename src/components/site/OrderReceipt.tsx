@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import logo from "@/assets/diego-logo.png";
-import { ENTERPRISE, formatFcfa, type Brand } from "@/lib/diego";
+import { ENTERPRISE, formatFcfa, numberToFrenchWords, type Brand } from "@/lib/diego";
 
 export type ReceiptExtra = { label: string; amount: number };
 
@@ -27,32 +27,15 @@ export type ReceiptData = {
 };
 
 const navy = "#0f2557";
-const red = "#e2231a";
-const line = "#dbe1ec";
-
-function Row({ label, value }: { label: string; value: string }) {
-  if (!value) return null;
-  return (
-    <tr>
-      <td
-        style={{
-          padding: "6px 10px",
-          border: `1px solid ${line}`,
-          background: "#f4f6fb",
-          fontWeight: 700,
-          width: "38%",
-          color: navy,
-        }}
-      >
-        {label}
-      </td>
-      <td style={{ padding: "6px 10px", border: `1px solid ${line}` }}>{value}</td>
-    </tr>
-  );
-}
+const line = "#c9cfdb";
+const label: React.CSSProperties = {
+  fontStyle: "italic",
+  textDecoration: "underline",
+  color: navy,
+};
 
 const cell: React.CSSProperties = {
-  padding: "7px 10px",
+  padding: "6px 10px",
   border: `1px solid ${line}`,
 };
 
@@ -77,13 +60,14 @@ export const OrderReceipt = forwardRef<HTMLDivElement, { data: ReceiptData | nul
             background: "#ffffff",
             color: "#101828",
             fontFamily: "Manrope, Arial, sans-serif",
-            fontSize: "14px",
+            fontSize: "13px",
+            lineHeight: 1.5,
             padding: "32px",
             boxSizing: "border-box",
             overflow: "hidden",
           }}
         >
-          {/* filigrane / watermark */}
+          {/* filigrane / watermark — kept as the only place the logo mark appears at scale */}
           <img
             src={logo}
             alt=""
@@ -100,53 +84,86 @@ export const OrderReceipt = forwardRef<HTMLDivElement, { data: ReceiptData | nul
 
           {data && (
             <div style={{ position: "relative" }}>
+              {/* En-tête / letterhead */}
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "flex-start",
-                  borderBottom: `4px solid ${navy}`,
-                  paddingBottom: "14px",
+                  gap: "12px",
+                  borderBottom: `2px solid ${navy}`,
+                  paddingBottom: "10px",
                 }}
               >
                 <div>
-                  <div style={{ fontSize: "20px", fontWeight: 900, color: navy }}>
-                    {ENTERPRISE.name}
-                  </div>
-                  <div style={{ color: "#475467" }}>{ENTERPRISE.tagline}</div>
-                  <div style={{ marginTop: "8px", fontWeight: 800, color: red }}>
-                    CODE CLIENT : {data.reference}
+                  <img src={logo} alt="" style={{ height: "44px", width: "auto" }} />
+                  <div style={{ marginTop: "6px", fontWeight: 800, fontSize: "11px" }}>
+                    CODE FOURNISSEUR SABC : {ENTERPRISE.codeFournisseurSabc}
                   </div>
                 </div>
-                <div style={{ textAlign: "right", color: "#475467" }}>
-                  <div style={{ fontWeight: 800, color: red, fontSize: "16px" }}>
-                    FACTURE PROFORMA
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "18px",
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    color: "#475467",
+                    textAlign: "center",
+                    flex: 1,
+                    justifyContent: "center",
+                    marginTop: "4px",
+                  }}
+                >
+                  <div>
+                    + AGENCE CONSEIL
+                    <br />+ MARKETING OPÉRATIONNEL
                   </div>
-                  <div>Date : {data.issuedAt}</div>
-                  <div>WhatsApp : {ENTERPRISE.whatsappDisplay}</div>
+                  <div>
+                    + DISTRIBUTION COMMERCIALE
+                    <br />+ PRESTATION DE SERVICES
+                  </div>
+                </div>
+                <div style={{ fontSize: "12px", whiteSpace: "nowrap" }}>
+                  Yaoundé, le {data.issuedAt}
                 </div>
               </div>
 
-              <h2 style={{ fontSize: "15px", color: navy, margin: "20px 0 8px" }}>DOIT — CLIENT</h2>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <tbody>
-                  <Row label="Nom et prénom" value={data.fullName} />
-                  <Row label="Téléphone" value={data.phone} />
-                  <Row label="E-mail" value={data.email} />
-                  <Row label="Adresse / Ville" value={data.address} />
-                </tbody>
-              </table>
+              {/* Titre facture + Doit */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: "20px",
+                  marginTop: "18px",
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 900, fontSize: "16px" }}>FACTURE PROFORMA</div>
+                  <div style={{ marginTop: "6px" }}>N° : {data.reference}</div>
+                  <div>BL N° : </div>
+                  <div>OA N° : </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontWeight: 800, textDecoration: "underline" }}>Doit :</div>
+                  <div style={{ marginTop: "6px" }}>{data.fullName}</div>
+                  <div>{data.phone}</div>
+                  <div>{data.address}</div>
+                </div>
+              </div>
 
-              <h2 style={{ fontSize: "15px", color: navy, margin: "20px 0 8px" }}>
-                DÉTAIL DE LA COMMANDE
-              </h2>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <div style={{ marginTop: "16px" }}>
+                <span style={label}>Objet</span> : {data.objet}
+                <div style={{ color: "#475467" }}>{data.eventPlace}</div>
+              </div>
+
+              {/* Table */}
+              <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "16px" }}>
                 <thead>
                   <tr style={{ background: navy, color: "#ffffff" }}>
-                    <th style={{ padding: "8px 10px", textAlign: "left" }}>Désignation</th>
-                    <th style={{ padding: "8px 10px", textAlign: "center" }}>Qté</th>
-                    <th style={{ padding: "8px 10px", textAlign: "right" }}>P. unitaire</th>
-                    <th style={{ padding: "8px 10px", textAlign: "right" }}>Montant</th>
+                    <th style={{ padding: "7px 10px", textAlign: "left" }}>Désignation</th>
+                    <th style={{ padding: "7px 10px", textAlign: "center" }}>Qté</th>
+                    <th style={{ padding: "7px 10px", textAlign: "right" }}>Prix unitaire</th>
+                    <th style={{ padding: "7px 10px", textAlign: "right" }}>Prix total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,125 +183,115 @@ export const OrderReceipt = forwardRef<HTMLDivElement, { data: ReceiptData | nul
                   {data.extras.map((extra) => (
                     <tr key={extra.label}>
                       <td style={cell}>{extra.label}</td>
-                      <td style={{ ...cell, textAlign: "center" }}>1</td>
-                      <td style={{ ...cell, textAlign: "right" }}>
-                        {extra.amount > 0 ? formatFcfa(extra.amount) : "Gratuit"}
-                      </td>
+                      <td style={{ ...cell, textAlign: "center" }}>-</td>
+                      <td style={{ ...cell, textAlign: "right" }}>-</td>
                       <td style={{ ...cell, textAlign: "right" }}>
                         {extra.amount > 0 ? formatFcfa(extra.amount) : "Gratuit"}
                       </td>
                     </tr>
                   ))}
                   <tr>
-                    <td
-                      colSpan={3}
-                      style={{ ...cell, textAlign: "right", fontWeight: 700, color: navy }}
-                    >
-                      Sous-total boissons
+                    <td colSpan={3} style={{ ...cell, textAlign: "right", fontWeight: 800 }}>
+                      Total HT
                     </td>
-                    <td style={{ ...cell, textAlign: "right", fontWeight: 700 }}>
-                      {formatFcfa(data.total)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      colSpan={3}
-                      style={{ ...cell, textAlign: "right", fontWeight: 700, color: navy }}
-                    >
-                      Sous-total prestations & caution
-                    </td>
-                    <td style={{ ...cell, textAlign: "right", fontWeight: 700 }}>
-                      {formatFcfa(data.extrasTotal)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      colSpan={3}
-                      style={{
-                        ...cell,
-                        textAlign: "right",
-                        fontWeight: 800,
-                        color: "#ffffff",
-                        background: navy,
-                      }}
-                    >
-                      MONTANT TOTAL À PAYER
-                    </td>
-                    <td
-                      style={{
-                        ...cell,
-                        textAlign: "right",
-                        fontWeight: 800,
-                        color: "#ffffff",
-                        background: red,
-                      }}
-                    >
+                    <td style={{ ...cell, textAlign: "right", fontWeight: 800 }}>
                       {formatFcfa(data.grandTotal)}
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <div style={{ marginTop: "6px", color: "#475467", fontSize: "12px" }}>
-                Total fûts : {data.totalKegs} — Gobelets offerts : {data.totalKegs * 50} — Transport
-                gratuit dans la ville de Yaoundé.
+              <div style={{ marginTop: "6px", color: "#475467", fontSize: "11px" }}>
+                Total fûts : {data.totalKegs} — Gobelets offerts : {data.totalKegs * 50}
               </div>
 
-              <h2 style={{ fontSize: "15px", color: navy, margin: "20px 0 8px" }}>PRESTATION</h2>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <tbody>
-                  <Row label="Nature de prestation" value={data.objet} />
-                  <Row label="Lieu de la prestation" value={data.eventPlace} />
-                  <Row label="Date de la prestation" value={data.eventDate} />
-                  <Row label="Heure de début" value={data.startTime} />
-                  <Row label="Durée" value={data.duration} />
-                  <Row label="Moyen de transport" value={data.transport} />
-                  <Row label="Informations complémentaires" value={data.notes} />
-                </tbody>
-              </table>
+              <div style={{ marginTop: "14px" }}>
+                Arrêtée la présente facture à la somme de : {formatFcfa(data.grandTotal)} (
+                {numberToFrenchWords(data.grandTotal)} francs CFA).
+              </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginTop: "26px",
-                  color: "#475467",
-                  fontSize: "12px",
-                }}
-              >
+              {/* Signature */}
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "26px" }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 800, textDecoration: "underline" }}>La Direction</div>
+                  <div style={{ height: "48px" }} />
+                </div>
+              </div>
+
+              {/* Numéros utiles */}
+              <div style={{ marginTop: "18px" }}>
+                <div style={{ fontWeight: 800, textDecoration: "underline" }}>Numéros utiles :</div>
+                <div style={{ marginTop: "4px" }}>
+                  • Pour le service après-vente, merci de contacter : {ENTERPRISE.sav}
+                </div>
                 <div>
-                  Signature du client
-                  <div
-                    style={{
-                      marginTop: "34px",
-                      width: "200px",
-                      borderTop: `1px solid ${line}`,
-                    }}
-                  />
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  Pour {ENTERPRISE.name}
-                  <div
-                    style={{
-                      marginTop: "34px",
-                      width: "200px",
-                      borderTop: `1px solid ${line}`,
-                    }}
-                  />
+                  • Pour toutes vos réclamations, merci de contacter : {ENTERPRISE.reclamations}
                 </div>
               </div>
 
+              {/* Détails prestation */}
+              <div style={{ marginTop: "14px" }}>
+                <div>
+                  <span style={label}>Lieu de la prestation</span> : {data.eventPlace}
+                </div>
+                <div>
+                  <span style={label}>Date de la prestation</span> : {data.eventDate}
+                </div>
+                <div>
+                  <span style={label}>Heure de début</span> : {data.startTime}
+                </div>
+                <div>
+                  <span style={label}>Heure de fin</span> : ({data.duration} après le début de la
+                  prestation)
+                </div>
+                <div>
+                  <span style={label}>Moyen de transport</span> : {data.transport}
+                </div>
+                <div>NB : chaque fût est accompagné de 50 gobelets.</div>
+                {data.notes && (
+                  <div>
+                    <span style={label}>Informations complémentaires</span> : {data.notes}
+                  </div>
+                )}
+              </div>
+
+              {/* Pied de page */}
               <div
                 style={{
                   marginTop: "22px",
                   borderTop: `1px solid ${line}`,
                   paddingTop: "10px",
-                  color: "#667085",
                   fontSize: "11px",
+                  textAlign: "center",
+                  fontWeight: 700,
+                  color: navy,
                 }}
               >
-                {ENTERPRISE.address} — {ENTERPRISE.bp} — {ENTERPRISE.email}
-                <br />
-                RCCM : {ENTERPRISE.rccm} — NIU : {ENTERPRISE.niu} — {ENTERPRISE.slogan}
+                {ENTERPRISE.name}, {ENTERPRISE.slogan}
+              </div>
+              <div
+                style={{
+                  marginTop: "8px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: "12px",
+                  color: "#667085",
+                  fontSize: "10px",
+                }}
+              >
+                <div>
+                  RCCM : {ENTERPRISE.rccm}
+                  <br />
+                  NIU : {ENTERPRISE.niu}
+                  <br />
+                  RIB : {ENTERPRISE.rib}
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  {ENTERPRISE.bp}
+                  <br />
+                  Tél : {ENTERPRISE.whatsappDisplay}
+                  <br />
+                  {ENTERPRISE.email}
+                </div>
               </div>
             </div>
           )}

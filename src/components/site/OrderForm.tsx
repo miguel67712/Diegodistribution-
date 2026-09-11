@@ -125,7 +125,7 @@ export function OrderForm() {
     } catch {
       // localStorage unavailable (private browsing, etc.) — fall back to 1
     }
-    return `BAP/${year}/${month}/${sequence}`;
+    return `BAP${year}${month}/${sequence}`;
   };
 
   const set = (key: keyof typeof values, value: string) => {
@@ -275,7 +275,11 @@ export function OrderForm() {
     extras,
     extrasTotal,
     grandTotal,
-    issuedAt: new Date().toLocaleDateString("fr-FR"),
+    issuedAt: new Date().toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }),
     reference: makeClientCode(),
   });
 

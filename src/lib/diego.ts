@@ -14,6 +14,8 @@ export const ENTERPRISE = {
   bp: "B.P. : 33318 Yaoundé – Cameroun",
   rccm: "CM-NSI-01-2025-B13-01544",
   niu: "M122518259439N",
+  rib: "10002 00072 90001920609 83",
+  codeFournisseurSabc: "FD00143",
 };
 
 /** Les 3 numéros WhatsApp joignables depuis le site. */
@@ -100,3 +102,87 @@ export const SERVICE_FEE_OPTIONS: PriceOption[] = [
 ];
 
 export const formatFcfa = (n: number) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
+
+const FR_UNITS = [
+  "zéro",
+  "un",
+  "deux",
+  "trois",
+  "quatre",
+  "cinq",
+  "six",
+  "sept",
+  "huit",
+  "neuf",
+  "dix",
+  "onze",
+  "douze",
+  "treize",
+  "quatorze",
+  "quinze",
+  "seize",
+  "dix-sept",
+  "dix-huit",
+  "dix-neuf",
+];
+const FR_TENS: Record<number, string> = {
+  2: "vingt",
+  3: "trente",
+  4: "quarante",
+  5: "cinquante",
+  6: "soixante",
+};
+
+function frTwoDigits(n: number): string {
+  if (n < 17) return FR_UNITS[n] ?? "";
+  if (n < 20) return FR_UNITS[n] ?? "";
+  const t = Math.floor(n / 10);
+  const u = n % 10;
+  if (t >= 2 && t <= 6) {
+    if (u === 0) return FR_TENS[t] ?? "";
+    if (u === 1) return `${FR_TENS[t]} et un`;
+    return `${FR_TENS[t]}-${FR_UNITS[u]}`;
+  }
+  if (t === 7) {
+    if (u === 0) return "soixante-dix";
+    if (u === 1) return "soixante et onze";
+    return `soixante-${FR_UNITS[10 + u]}`;
+  }
+  if (t === 8) {
+    if (u === 0) return "quatre-vingts";
+    return `quatre-vingt-${FR_UNITS[u]}`;
+  }
+  // t === 9
+  if (u === 0) return "quatre-vingt-dix";
+  return `quatre-vingt-${FR_UNITS[10 + u]}`;
+}
+
+function frThreeDigits(n: number): string {
+  const h = Math.floor(n / 100);
+  const rem = n % 100;
+  if (h === 0) return frTwoDigits(rem);
+  const prefix = h === 1 ? "cent" : `${FR_UNITS[h]} cent${rem === 0 ? "s" : ""}`;
+  if (rem === 0) return prefix;
+  return `${prefix} ${frTwoDigits(rem)}`;
+}
+
+function frThousands(n: number): string {
+  const k = Math.floor(n / 1000);
+  const rem = n % 1000;
+  if (k === 0) return frThreeDigits(rem);
+  const kWords = k === 1 ? "mille" : `${frThreeDigits(k)} mille`;
+  if (rem === 0) return kWords;
+  return `${kWords} ${frThreeDigits(rem)}`;
+}
+
+/** Converts an integer (e.g. a total in FCFA) into French words, e.g. 201250 -> "deux cent un mille deux cent cinquante". */
+export function numberToFrenchWords(n: number): string {
+  const value = Math.round(Math.abs(n));
+  if (value === 0) return "zéro";
+  const m = Math.floor(value / 1_000_000);
+  const rem = value % 1_000_000;
+  if (m === 0) return frThousands(rem);
+  const mWords = m === 1 ? "un million" : `${frThreeDigits(m)} millions`;
+  if (rem === 0) return mWords;
+  return `${mWords} ${frThousands(rem)}`;
+}
