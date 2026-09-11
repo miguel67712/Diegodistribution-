@@ -113,10 +113,19 @@ export function OrderForm() {
   const receiptRef = useRef<HTMLDivElement>(null);
 
   const makeClientCode = () => {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let code = "";
-    for (let i = 0; i < 6; i += 1) code += chars[Math.floor(Math.random() * chars.length)];
-    return `DGO-${code}`;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    let sequence = 1;
+    try {
+      const key = "diego-receipt-counter";
+      const stored = window.localStorage.getItem(key);
+      sequence = stored ? Number.parseInt(stored, 10) + 1 : 1;
+      window.localStorage.setItem(key, String(sequence));
+    } catch {
+      // localStorage unavailable (private browsing, etc.) — fall back to 1
+    }
+    return `BAP/${year}/${month}/${sequence}`;
   };
 
   const set = (key: keyof typeof values, value: string) => {
@@ -276,7 +285,13 @@ export function OrderForm() {
     if (!win) return;
     win.document.write(
       `<!doctype html><html><head><title>Facture proforma — ${ENTERPRISE.name}</title>` +
-        `<style>@page{margin:10mm}body{margin:0}img{width:100%}</style></head>` +
+        `<style>` +
+        `@page{size:A4;margin:8mm}` +
+        `html,body{margin:0;height:100%}` +
+        `body{display:flex;align-items:flex-start;justify-content:center}` +
+        `img{max-width:100%;max-height:100vh;width:auto;height:auto;object-fit:contain;` +
+        `page-break-inside:avoid;break-inside:avoid}` +
+        `</style></head>` +
         `<body><img src="${imageUrl}" onload="window.focus();window.print();" /></body></html>`,
     );
     win.document.close();

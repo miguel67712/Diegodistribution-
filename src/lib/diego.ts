@@ -1,6 +1,5 @@
 export const ENTERPRISE = {
   name: "DIEGO Distribution",
-  legal: "DIEGO SAS",
   tagline: "La Vraie Bière Pression des Boissons du Cameroun",
   slogan: "Un monde de performance et d'innovations",
   whatsapp: "237640737373",

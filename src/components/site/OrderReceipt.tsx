@@ -110,9 +110,8 @@ export const OrderReceipt = forwardRef<HTMLDivElement, { data: ReceiptData | nul
                 }}
               >
                 <div>
-                  <img src={logo} alt="" style={{ height: "46px", width: "auto" }} />
-                  <div style={{ marginTop: "6px", fontWeight: 800, color: navy }}>
-                    {ENTERPRISE.legal} — {ENTERPRISE.name}
+                  <div style={{ fontSize: "20px", fontWeight: 900, color: navy }}>
+                    {ENTERPRISE.name}
                   </div>
                   <div style={{ color: "#475467" }}>{ENTERPRISE.tagline}</div>
                   <div style={{ marginTop: "8px", fontWeight: 800, color: red }}>
@@ -263,7 +262,7 @@ export const OrderReceipt = forwardRef<HTMLDivElement, { data: ReceiptData | nul
                   />
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  Pour {ENTERPRISE.legal}
+                  Pour {ENTERPRISE.name}
                   <div
                     style={{
                       marginTop: "34px",
